@@ -3,29 +3,13 @@ const ROUNDS = [
     {
         id: 1,
         type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Golde33443.jpg/640px-Golde33443.jpg",
-        question: "Is this photo of a Golden Retriever real or AI-generated?",
-        answer: "real",
-        explanation: "This is a real photograph. Notice the natural variation in fur texture, the authentic catchlight in the eyes, and the slightly imperfect composition typical of real photography."
-    },
-    {
-        id: 2,
-        type: "image",
         mediaUrl: "/images/fakepolitician.png",
         question: "Is this portrait of a political figure real or AI-generated?",
         answer: "ai",
         explanation: "This is AI-generated. Look closely at the background elements - they lack consistent detail and have the characteristic smoothness of AI rendering. The facial symmetry is too perfect, and the skin texture lacks the micro-variations of real photography."
     },
     {
-        id: 3,
-        type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Tigerwater_edit2.jpg/800px-Tigerwater_edit2.jpg",
-        question: "Is this image of a tiger real or AI-generated?",
-        answer: "real",
-        explanation: "This is a real photograph. The water splashing has the chaotic, unpredictable quality of real physics. AI-generated water often looks too smooth or repeats patterns unnaturally."
-    },
-    {
-        id: 4,
+        id: 2,
         type: "image",
         mediaUrl: "/images/fakelandscape.png",
         question: "Is this landscape photograph real or AI-generated?",
@@ -33,7 +17,7 @@ const ROUNDS = [
         explanation: "This landscape was created by AI. While it looks stunning, notice how the distant elements lack proper atmospheric perspective. The lighting is too perfect, and small details like vegetation patterns repeat unnaturally."
     },
     {
-        id: 5,
+        id: 3,
         type: "image",
         mediaUrl: "/images/realpolitician.jpg",
         question: "Is this photograph real or AI-generated?",
@@ -41,7 +25,7 @@ const ROUNDS = [
         explanation: "This is a real photograph. Notice the worn-out texture of the political party banner, the authentic details in the trees, and the natural weathering of the straw roof. These organic imperfections and realistic wear patterns are difficult for AI to convincingly replicate."
     },
     {
-        id: 6,
+        id: 4,
         type: "image",
         mediaUrl: "/images/reallandscape.jpg",
         question: "Is this landscape photograph real or AI-generated?",
@@ -49,7 +33,7 @@ const ROUNDS = [
         explanation: "This is a real landscape photograph. The atmospheric perspective, natural lighting variations, and authentic vegetation patterns all indicate real-world capture. Notice the genuine depth and organic imperfections that AI struggles to replicate."
     },
     {
-        id: 7,
+        id: 5,
         type: "audio",
         mediaUrl: "/audio/fakeyouth.mp3",
         mediaUrl2: "/audio/fakeelderly.mp3",
@@ -57,14 +41,6 @@ const ROUNDS = [
         answer: "both",
         explanation: "This was a trick question - both voices are AI-generated! Modern AI voice synthesis has become so sophisticated that it can convincingly replicate voices of different ages and genders. The subtle breathing patterns, emotional inflections, and natural pauses that used to distinguish real voices can now all be artificially created."
     },
-    {
-        id: 8,
-        type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
-        question: "Is this the real Mona Lisa or an AI recreation?",
-        answer: "real",
-        explanation: "This is the real Mona Lisa photographed at the Louvre. The craquelure (crack patterns), aged varnish, and wood panel texture are authentic signs of a centuries-old painting that AI would struggle to replicate perfectly."
-    }
 ];
 
 const c = {
@@ -90,17 +66,10 @@ export default function App() {
     const [sel, setSel] = useState(null);
     const [show, setShow] = useState(false);
     const [log, setLog] = useState([]);
+    const [imgLoaded, setImgLoaded] = useState(false);
 
     const r = ROUNDS[cur];
     const n = ROUNDS.length;
-
-    // Audio time limit handler - stops playback at 10 seconds
-    const handleAudioTimeUpdate = (e) => {
-        if (e.target.currentTime >= 10) {
-            e.target.pause();
-            e.target.currentTime = 10;
-        }
-    };
 
     const pick = (choice) => {
         if (show) return;
@@ -116,6 +85,7 @@ export default function App() {
             setCur((i) => i + 1);
             setSel(null);
             setShow(false);
+            setImgLoaded(false);
         } else {
             setScreen("results");
         }
@@ -128,6 +98,7 @@ export default function App() {
         setSel(null);
         setShow(false);
         setLog([]);
+        setImgLoaded(false);
     };
 
     const msg = () => {
@@ -151,7 +122,7 @@ export default function App() {
                     <p style={{ fontSize: 14, color: c.dim, lineHeight: 1.6, marginBottom: 40, fontStyle: "italic" }}>
                         The fakes are better than you think.
                     </p>
-                    <button onClick={() => setScreen("game")} style={{ background: c.accent, color: "#fff", border: "none", padding: "14px 48px", fontSize: 16, fontFamily: sans, fontWeight: 600, cursor: "pointer", letterSpacing: 0.5 }}>
+                    <button onClick={() => setScreen("game")} style={{ background: c.accent, color: "#fff", border: "none", padding: "14px 48px", fontSize: 16, fontFamily: sans, fontWeight: 600, cursor: "pointer", letterSpacing: 0.5, transition: "transform 0.15s ease, box-shadow 0.15s ease", borderRadius: 4 }} onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"} onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"} onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
                         START
                     </button>
                 </div>
@@ -179,7 +150,7 @@ export default function App() {
                             </div>
                         ))}
                     </div>
-                    <button onClick={restart} style={{ background: c.accent, color: "#fff", border: "none", padding: "12px 36px", fontSize: 15, fontFamily: sans, fontWeight: 600, cursor: "pointer" }}>
+                    <button onClick={restart} style={{ background: c.accent, color: "#fff", border: "none", padding: "12px 36px", fontSize: 15, fontFamily: sans, fontWeight: 600, cursor: "pointer", transition: "transform 0.15s ease", borderRadius: 4 }} onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"} onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"} onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
                         TRY AGAIN
                     </button>
                     <p style={{ fontSize: 13, color: c.dim, marginTop: 32, fontFamily: sans }}>
@@ -203,14 +174,24 @@ export default function App() {
             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 24px 24px" }}>
                 <div style={{ maxWidth: 560, width: "100%" }}>
                     {r.type === "image" && (
-                        <div style={{ marginBottom: 28, borderRadius: 4, overflow: "hidden", background: c.card, border: `1px solid ${c.border}` }}>
-                            <img src={r.mediaUrl} alt="Round content" style={{ width: "100%", display: "block", maxHeight: 360, objectFit: "cover" }} />
+                        <div style={{ marginBottom: 28, borderRadius: 4, overflow: "hidden", background: c.card, border: `1px solid ${c.border}`, position: "relative", minHeight: 360 }}>
+                            {!imgLoaded && (
+                                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: c.card }}>
+                                    <div style={{ width: 48, height: 48, border: `3px solid ${c.border}`, borderTop: `3px solid ${c.accent}`, borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                                </div>
+                            )}
+                            <img
+                                src={r.mediaUrl}
+                                alt="Round content"
+                                style={{ width: "100%", display: "block", maxHeight: 360, objectFit: "cover", opacity: imgLoaded ? 1 : 0, transition: "opacity 0.3s ease" }}
+                                onLoad={() => setImgLoaded(true)}
+                            />
                         </div>
                     )}
                     {r.type === "audio" && !r.mediaUrl2 && (
                         <div style={{ marginBottom: 28, padding: 40, background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, textAlign: "center" }}>
                             <div style={{ fontSize: 40, marginBottom: 16 }}>🎧</div>
-                            <audio controls style={{ width: "100%" }} src={r.mediaUrl} onTimeUpdate={handleAudioTimeUpdate} />
+                            <audio controls style={{ width: "100%" }} src={r.mediaUrl} />
                         </div>
                     )}
                     {r.type === "audio" && r.mediaUrl2 && (
@@ -218,12 +199,12 @@ export default function App() {
                             <div style={{ flex: 1, padding: 32, background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, textAlign: "center" }}>
                                 <div style={{ fontSize: 32, marginBottom: 12 }}>🎧</div>
                                 <div style={{ fontSize: 14, fontFamily: sans, fontWeight: 600, color: c.dim, marginBottom: 16, textTransform: "uppercase", letterSpacing: 1 }}>Voice 1</div>
-                                <audio controls style={{ width: "100%" }} src={r.mediaUrl} onTimeUpdate={handleAudioTimeUpdate} />
+                                <audio controls style={{ width: "100%" }} src={r.mediaUrl} />
                             </div>
                             <div style={{ flex: 1, padding: 32, background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, textAlign: "center" }}>
                                 <div style={{ fontSize: 32, marginBottom: 12 }}>🎧</div>
                                 <div style={{ fontSize: 14, fontFamily: sans, fontWeight: 600, color: c.dim, marginBottom: 16, textTransform: "uppercase", letterSpacing: 1 }}>Voice 2</div>
-                                <audio controls style={{ width: "100%" }} src={r.mediaUrl2} onTimeUpdate={handleAudioTimeUpdate} />
+                                <audio controls style={{ width: "100%" }} src={r.mediaUrl2} />
                             </div>
                         </div>
                     )}
@@ -246,7 +227,14 @@ export default function App() {
                                 }
                             }
                             return (
-                                <button key={ch} onClick={() => pick(ch)} style={{ flex: 1, padding: "16px 0", fontSize: 16, fontFamily: sans, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1, background: bg, color: cl, border: `2px solid ${bd}`, cursor: show ? "default" : "pointer", transition: "all 0.2s" }}>
+                                <button
+                                    key={ch}
+                                    onClick={() => pick(ch)}
+                                    style={{ flex: 1, padding: "16px 0", fontSize: 16, fontFamily: sans, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1, background: bg, color: cl, border: `2px solid ${bd}`, cursor: show ? "default" : "pointer", transition: "all 0.2s", borderRadius: 4 }}
+                                    onMouseDown={(e) => !show && (e.currentTarget.style.transform = "scale(0.97)")}
+                                    onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+                                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+                                >
                                     {ch === "real" ? "Real" : ch === "ai" ? "AI Generated" : ch === "voice1" ? "Voice 1" : "Voice 2"}
                                 </button>
                             );
@@ -262,7 +250,7 @@ export default function App() {
                     )}
                     {show && (
                         <div style={{ textAlign: "center" }}>
-                            <button onClick={next} style={{ background: c.accent, color: "#fff", border: "none", padding: "12px 48px", fontSize: 15, fontFamily: sans, fontWeight: 600, cursor: "pointer", letterSpacing: 0.5 }}>
+                            <button onClick={next} style={{ background: c.accent, color: "#fff", border: "none", padding: "12px 48px", fontSize: 15, fontFamily: sans, fontWeight: 600, cursor: "pointer", letterSpacing: 0.5, transition: "transform 0.15s ease", borderRadius: 4 }} onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.95)"} onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"} onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
                                 {cur + 1 < n ? "NEXT ROUND" : "SEE RESULTS"}
                             </button>
                         </div>
