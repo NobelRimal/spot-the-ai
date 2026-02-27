@@ -30,7 +30,7 @@ const ROUNDS = [
         mediaUrl: "/images/reallandscape.jpg",
         question: "Is this landscape photograph real or AI-generated?",
         answer: "real",
-        explanation: "This is a real landscape photograph. The atmospheric perspective, natural lighting variations, and authentic vegetation patterns all indicate real-world capture. Notice the genuine depth and organic imperfections that AI struggles to replicate."
+        explanation: "This is a real photograph. Notice the person mid-movement - the natural body positioning and motion blur have a specific visual quality that AI typically struggles to generate convincingly. The atmospheric perspective and natural lighting variations also indicate real-world capture."
     },
     {
         id: 5,
