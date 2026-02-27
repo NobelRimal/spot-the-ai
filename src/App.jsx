@@ -6,15 +6,15 @@ const ROUNDS = [
         mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Golde33443.jpg/640px-Golde33443.jpg",
         question: "Is this photo of a Golden Retriever real or AI-generated?",
         answer: "real",
-        explanation: "This is a real photograph. Notice the natural variation in fur texture, the authentic catchlight in the eyes, and the slightly imperfect composition. Real photos tend to have subtle asymmetries that AI often smooths out."
+        explanation: "This is a real photograph. Notice the natural variation in fur texture, the authentic catchlight in the eyes, and the slightly imperfect composition typical of real photography."
     },
     {
         id: 2,
         type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg",
-        question: "Real cat or AI-generated?",
-        answer: "real",
-        explanation: "This is a real photograph. The fur detail, whisker placement, and background depth of field are all consistent with a real camera capture. AI-generated cats often have whiskers that fade or merge unnaturally."
+        mediaUrl: "/images/fakepolitician.png",
+        question: "Is this portrait of a political figure real or AI-generated?",
+        answer: "ai",
+        explanation: "This is AI-generated. Look closely at the background elements - they lack consistent detail and have the characteristic smoothness of AI rendering. The facial symmetry is too perfect, and the skin texture lacks the micro-variations of real photography."
     },
     {
         id: 3,
@@ -22,39 +22,48 @@ const ROUNDS = [
         mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Tigerwater_edit2.jpg/800px-Tigerwater_edit2.jpg",
         question: "Is this image of a tiger real or AI-generated?",
         answer: "real",
-        explanation: "This is a real photograph. The water splashing has the chaotic, unpredictable quality of real physics. AI-generated water often looks too smooth or repeats patterns."
+        explanation: "This is a real photograph. The water splashing has the chaotic, unpredictable quality of real physics. AI-generated water often looks too smooth or repeats patterns unnaturally."
     },
     {
         id: 4,
         type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
-        question: "Street scene: Real photo or AI-generated?",
-        answer: "real",
-        explanation: "This is a real photograph taken with a mobile phone. Notice the lens flare, natural noise grain, and the way people in the background are slightly motion-blurred. AI images tend to render every element with equal sharpness."
+        mediaUrl: "/images/fakelandscape.png",
+        question: "Is this landscape photograph real or AI-generated?",
+        answer: "ai",
+        explanation: "This landscape was created by AI. While it looks stunning, notice how the distant elements lack proper atmospheric perspective. The lighting is too perfect, and small details like vegetation patterns repeat unnaturally."
     },
     {
         id: 5,
         type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/800px-Camponotus_flavomarginatus_ant.jpg",
-        question: "Macro shot of an ant. Real or AI?",
+        mediaUrl: "/images/realpolitician.jpg",
+        question: "Is this photograph real or AI-generated?",
         answer: "real",
-        explanation: "This is a real macro photograph. The depth of field, exoskeleton texture, and natural imperfections are all signs of real photography. AI struggles with consistent micro-detail at this scale."
+        explanation: "This is a real photograph. Notice the worn-out texture of the political party banner, the authentic details in the trees, and the natural weathering of the straw roof. These organic imperfections and realistic wear patterns are difficult for AI to convincingly replicate."
     },
     {
         id: 6,
         type: "image",
-        mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/300px-PNG_transparency_demonstration_1.png",
-        question: "Are these dice real or AI-generated?",
+        mediaUrl: "/images/reallandscape.jpg",
+        question: "Is this landscape photograph real or AI-generated?",
         answer: "real",
-        explanation: "These are real dice. The reflections, transparency, and the way light passes through the material are physically accurate in ways that AI often gets subtly wrong with transparent or reflective objects."
+        explanation: "This is a real landscape photograph. The atmospheric perspective, natural lighting variations, and authentic vegetation patterns all indicate real-world capture. Notice the genuine depth and organic imperfections that AI struggles to replicate."
     },
     {
         id: 7,
+        type: "audio",
+        mediaUrl: "/audio/fakeyouth.mp3",
+        mediaUrl2: "/audio/fakeelderly.mp3",
+        question: "Listen to both voices. Which one is AI-generated?",
+        answer: "both",
+        explanation: "This was a trick question - both voices are AI-generated! Modern AI voice synthesis has become so sophisticated that it can convincingly replicate voices of different ages and genders. The subtle breathing patterns, emotional inflections, and natural pauses that used to distinguish real voices can now all be artificially created."
+    },
+    {
+        id: 8,
         type: "image",
         mediaUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
         question: "Is this the real Mona Lisa or an AI recreation?",
         answer: "real",
-        explanation: "This is the real Mona Lisa photographed at the Louvre. The craquelure (crack patterns), aged varnish, and wood panel texture are authentic signs of a centuries-old painting that AI would struggle to replicate."
+        explanation: "This is the real Mona Lisa photographed at the Louvre. The craquelure (crack patterns), aged varnish, and wood panel texture are authentic signs of a centuries-old painting that AI would struggle to replicate perfectly."
     }
 ];
 
@@ -84,6 +93,14 @@ export default function App() {
 
     const r = ROUNDS[cur];
     const n = ROUNDS.length;
+
+    // Audio time limit handler - stops playback at 10 seconds
+    const handleAudioTimeUpdate = (e) => {
+        if (e.target.currentTime >= 10) {
+            e.target.pause();
+            e.target.currentTime = 10;
+        }
+    };
 
     const pick = (choice) => {
         if (show) return;
@@ -158,7 +175,7 @@ export default function App() {
                                 <div style={{ width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontFamily: sans, fontWeight: 700, background: a.ok ? c.greenDim : c.redDim, color: a.ok ? c.green : c.red }}>
                                     {a.ok ? "✓" : "✗"}
                                 </div>
-                                <span style={{ fontSize: 15, fontFamily: sans }}>Round {i + 1}: You said <strong>{a.choice}</strong> — {a.ok ? "Correct" : `Wrong (it was ${ROUNDS[i].answer})`}</span>
+                                <span style={{ fontSize: 15, fontFamily: sans }}>Round {i + 1}: You said <strong>{a.choice === "voice1" ? "Voice 1" : a.choice === "voice2" ? "Voice 2" : a.choice}</strong> — {a.ok ? "Correct" : ROUNDS[i].answer === "both" ? "Trick question - both were AI!" : `Wrong (it was ${ROUNDS[i].answer})`}</span>
                             </div>
                         ))}
                     </div>
@@ -190,10 +207,24 @@ export default function App() {
                             <img src={r.mediaUrl} alt="Round content" style={{ width: "100%", display: "block", maxHeight: 360, objectFit: "cover" }} />
                         </div>
                     )}
-                    {r.type === "audio" && (
+                    {r.type === "audio" && !r.mediaUrl2 && (
                         <div style={{ marginBottom: 28, padding: 40, background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, textAlign: "center" }}>
                             <div style={{ fontSize: 40, marginBottom: 16 }}>🎧</div>
-                            <audio controls style={{ width: "100%" }} src={r.mediaUrl} />
+                            <audio controls style={{ width: "100%" }} src={r.mediaUrl} onTimeUpdate={handleAudioTimeUpdate} />
+                        </div>
+                    )}
+                    {r.type === "audio" && r.mediaUrl2 && (
+                        <div style={{ marginBottom: 28, display: "flex", gap: 16 }}>
+                            <div style={{ flex: 1, padding: 32, background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, textAlign: "center" }}>
+                                <div style={{ fontSize: 32, marginBottom: 12 }}>🎧</div>
+                                <div style={{ fontSize: 14, fontFamily: sans, fontWeight: 600, color: c.dim, marginBottom: 16, textTransform: "uppercase", letterSpacing: 1 }}>Voice 1</div>
+                                <audio controls style={{ width: "100%" }} src={r.mediaUrl} onTimeUpdate={handleAudioTimeUpdate} />
+                            </div>
+                            <div style={{ flex: 1, padding: 32, background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, textAlign: "center" }}>
+                                <div style={{ fontSize: 32, marginBottom: 12 }}>🎧</div>
+                                <div style={{ fontSize: 14, fontFamily: sans, fontWeight: 600, color: c.dim, marginBottom: 16, textTransform: "uppercase", letterSpacing: 1 }}>Voice 2</div>
+                                <audio controls style={{ width: "100%" }} src={r.mediaUrl2} onTimeUpdate={handleAudioTimeUpdate} />
+                            </div>
                         </div>
                     )}
                     {r.type === "video" && (
@@ -203,15 +234,20 @@ export default function App() {
                     )}
                     <p style={{ fontSize: 20, lineHeight: 1.5, marginBottom: 24, textAlign: "center" }}>{r.question}</p>
                     <div style={{ display: "flex", gap: 16, marginBottom: 28 }}>
-                        {["real", "ai"].map((ch) => {
+                        {(r.mediaUrl2 ? ["voice1", "voice2"] : ["real", "ai"]).map((ch) => {
                             let bg = c.card, bd = c.border, cl = c.text;
                             if (show) {
-                                if (ch === r.answer) { bg = c.greenDim; bd = c.green; cl = c.green; }
-                                else if (ch === sel && ch !== r.answer) { bg = c.redDim; bd = c.red; cl = c.red; }
+                                if (r.answer === "both") {
+                                    // For "both" answer, both choices are wrong (red)
+                                    if (ch === sel) { bg = c.redDim; bd = c.red; cl = c.red; }
+                                } else {
+                                    if (ch === r.answer) { bg = c.greenDim; bd = c.green; cl = c.green; }
+                                    else if (ch === sel && ch !== r.answer) { bg = c.redDim; bd = c.red; cl = c.red; }
+                                }
                             }
                             return (
                                 <button key={ch} onClick={() => pick(ch)} style={{ flex: 1, padding: "16px 0", fontSize: 16, fontFamily: sans, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1, background: bg, color: cl, border: `2px solid ${bd}`, cursor: show ? "default" : "pointer", transition: "all 0.2s" }}>
-                                    {ch === "real" ? "Real" : "AI Generated"}
+                                    {ch === "real" ? "Real" : ch === "ai" ? "AI Generated" : ch === "voice1" ? "Voice 1" : "Voice 2"}
                                 </button>
                             );
                         })}
@@ -219,7 +255,7 @@ export default function App() {
                     {show && (
                         <div style={{ background: c.card, border: `1px solid ${c.border}`, padding: 20, borderRadius: 4, marginBottom: 24 }}>
                             <div style={{ fontSize: 13, fontFamily: sans, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, color: sel === r.answer ? c.green : c.red, marginBottom: 10 }}>
-                                {sel === r.answer ? "✓ Correct" : "✗ Wrong"}
+                                {r.answer === "both" ? "✗ Trick Question!" : sel === r.answer ? "✓ Correct" : "✗ Wrong"}
                             </div>
                             <p style={{ fontSize: 15, lineHeight: 1.65, color: c.dim, margin: 0 }}>{r.explanation}</p>
                         </div>
